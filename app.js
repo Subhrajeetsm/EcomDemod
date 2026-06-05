@@ -11,19 +11,40 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
+// MongoDB Connection
 async function connection() {
-    await mongoose.connect('');
+    try {
+
+        // OLD DATABASE NAME (disabled)
+        // await mongoose.connect('mongodb://localhost:27017/SiliconEcomE');
+
+        // EXISTING DATABASE
+        await mongoose.connect('mongodb://localhost:27017/siliconEcomE');
+
+        console.log("DB is connected");
+    } catch (err) {
+        console.log("DB Connection Error:", err);
+    }
 }
 
-// step 3 create a schema
-let productSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    price: { type: Number, required: true },
-    img: { type: String, required: true }
+// Product Schema
+const productSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    img: {
+        type: String,
+        required: true
+    }
 });
 
-// step 4 model
-let productModel = mongoose.model('products', productSchema);
+// Product Model
+const productModel = mongoose.model('products', productSchema);
 
 // Fact API
 app.get('/fact', (req, res) => {
@@ -32,19 +53,27 @@ app.get('/fact', (req, res) => {
     });
 });
 
-// Products API
-app.get('/products', (req, res) => {
-    res.json(products);
+// Get all products from MongoDB
+app.get('/products', async (req, res) => {
+    try {
+        const allProducts = await productModel.find();
+        res.json(allProducts);
+    } catch (err) {
+        res.status(500).json({
+            msg: "Error fetching products",
+            error: err.message
+        });
+    }
 });
 
-// Add product to MongoDB from Postman
+// Add product to MongoDB
 app.post('/products', async (req, res) => {
     try {
         console.log("Request Body:", req.body);
 
         const { title, price, img } = req.body;
 
-        let newProduct = await productModel.create({
+        const newProduct = await productModel.create({
             title,
             price,
             img
@@ -52,10 +81,11 @@ app.post('/products', async (req, res) => {
 
         console.log("Saved Product:", newProduct);
 
-        res.json({
-            msg: "product added successfully",
+        res.status(201).json({
+            msg: "Product added successfully",
             data: newProduct
         });
+
     } catch (err) {
         console.log(err);
 
@@ -66,17 +96,34 @@ app.post('/products', async (req, res) => {
     }
 });
 
-// http://localhost:3000/products/1
-app.get('/products/:n', (req, res) => {
-    let id = req.params.n;
-    res.json(products[id - 1]);
+// Get single product by MongoDB ID
+app.get('/products/:id', async (req, res) => {
+    try {
+        const product = await productModel.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                msg: "Product not found"
+            });
+        }
+
+        res.json(product);
+
+    } catch (err) {
+        res.status(500).json({
+            msg: "Error fetching product",
+            error: err.message
+        });
+    }
 });
+
+
 
 // Start Server
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
-
     await connection();
 
-    console.log("db is connected");
+    // Uncomment only when you want to insert sample products once
+    // await createSampleProducts();
 });

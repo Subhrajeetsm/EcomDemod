@@ -1,0 +1,26 @@
+REGISTER ROUTE GALAT HAI
+app.post('./register', ...)  ye tha
+app.post('/register', ...) ye hai
+
+2. await MISSING
+
+let fetchuser = users.findOne({username})  ye tha
+let fetchuser = await users.findOne({username}) ye hai
+
+
+3. connection CALL HI NAHI HAI
+
+
+app.listen(port,()=>{
+//     console.log(`the server is run on ${port}`);
+// })
+
+
+ye tha
+
+
+app.listen(port, async () => {
+    await connection();
+})
+ye hoga
+
