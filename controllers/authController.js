@@ -47,19 +47,6 @@ exports.login=async(req,res)=>{
             if(!isverify) return res.json({"msg":"invalid token"})
             res.json({"msg":"Loging"})
         console.log("user login")
-
-    /*
-    let detuser = await users.findOne({ username });
-    if (!detuser) {
-        return res.json({ msg: "invalid user name or password" });
-    }
-    let checkpassword = await bcrypt.compare(password, detuser.password);
-    if (!checkpassword) {
-        return res.json({ msg: "invalid user name or password" });
-    }
-    // Password matched
-    res.json({ msg: "Login successful" });
-    */
     }
     catch(error)
     {
