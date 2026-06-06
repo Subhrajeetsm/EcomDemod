@@ -7,7 +7,11 @@ exports.createproduct=async(req,res)=>{
     }
     catch(error)
     {
-        res.json({"msg":error.message})
+        res.json({
+  name: error.name,
+  message: error.message
+})
+        console.log("Erro found")
     }
 }
 
@@ -54,9 +58,13 @@ exports.deleteproduct=async(req,res)=>{
 }
 exports.bulkinsert = async (req, res) => {
     try {
-        await Products.insertMany(req.body); 
+        await products.insertMany(req.body); 
         res.json({ msg: "products saved successfully" });
     } catch (error) {
-        res.json({ msg: error.message });
+        res.json({
+  name: error.name,
+  message: error.message
+})
+        console.log("Erro found")
     }
 };
