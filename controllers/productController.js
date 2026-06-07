@@ -1,4 +1,5 @@
 let products = require('../models/product.model')
+const dotenv=require('dotenv').config();
 exports.createproduct=async(req,res)=>{
     try{
         const {title,price,img}=req.body
@@ -20,9 +21,6 @@ exports.getproduct=async(req,res)=>{
     let maxlimit = req.query.limit;
    // let shipment = req.query.location;
     let allproducts = await products.find().limit(Number(maxlimit));
-    //take token from ther headers using req.herader.key
-    //jwt.verify(token)
-    //if valid send msg invalid token
     res.json(allproducts);
     res.status(200).json({"msg":"products"})
 }
@@ -60,6 +58,7 @@ exports.bulkinsert = async (req, res) => {
     try {
         await products.insertMany(req.body); 
         res.json({ msg: "products saved successfully" });
+         console.log(process.env.MONGODBURL)
     } catch (error) {
         res.json({
   name: error.name,

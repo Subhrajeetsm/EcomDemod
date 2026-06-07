@@ -20,7 +20,7 @@ exports.register=async (req,res)=>{
         let payload={username:username,email:email}
         let token = await jwt.sign(payload,process.env.secretkey,{expiresIn:'1hr'})
         res.json({"msg":"regisation succesful",token})
-        mail(email);
+       /* mail(email);*/
     }
     catch(error)
     {
