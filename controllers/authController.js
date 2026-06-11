@@ -7,7 +7,7 @@ const dotenv=require('dotenv').config();
 exports.register=async (req,res)=>{
     try{
         const{username,password,email,role}=req.body
-        if(!username || !email || !role){
+        if(!username || !email || !role || !password){
             return res.json({"msg":"missing fileds"})
         }
         // let fetchuser = users.findOne({username})
